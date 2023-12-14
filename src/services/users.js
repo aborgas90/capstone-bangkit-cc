@@ -101,61 +101,34 @@ const requestPasswordreset = async ({user,passowrdLama, passwordBaru,passwordKon
 }
 
 
-const createProduct = async ( {productName, price, rating, sell, location, shopName, category}) => {
+const createProduct = async (productData) => {
   try {
-    const product = new Product({
-      productName,
-      price,
-      rating,
-      sell,
-      location,
-      shopName,
-      category,
-    })
-
-    await product.save();
-
-    return {product}
+      const product = new Product(productData);
+      await product.save();
+      return product;
   } catch (error) {
-    throw new Error('Product Gagal Dibuat')
+      throw new Error('Product Gagal Dibuat');
   }
-}
+};
 
+const getProducts = async () => {
+  try {
+      const products = await Product.find();
+      return products;
+  } catch (error) {
+      throw new Error('Gagal mendapatkan produk');
+  }
+};
 
-
-
-// const requestForgetPasswordReset = async ( {email}) => {
-//   const user = await User.findOne({email})
-
-//   if(!user) {
-//     throw new Error('User does not Exist')
-//   }
-
-//   let token = await Token.findOne({userId : user._id})
-//   if(token) await token.deleteOne();
-//   let resetToken = crypto.randomBytes(32).toString('hex');
-//   const hashedNewPassword = await bcrypt.hash(resetToken, 10);
-
-//   await new Token({
-//     userId : user._id,
-//     token: hashedNewPassword,
-//     createdAt: Date.now(),
-//   }).save();
-
-//   const link = `${clientURL}/passwordReset?token=${resetToken}&id=${user._id}`;
-//   sendEmail(
-//     user.email,
-//     "Password Reset Request",
-//     {
-//       name: user.name,
-//       link: link,
-//     },
-//     "./template/requestResetPassword.handlebars"
-//   );
-
-//   return { link };
-// }
-
+const searchProductsBySource = async (source) => {
+  try {
+    const products = await Product.find({ 'product.source': source });
+    return products;
+  } catch (error) {
+    console.error('Error searching products:', error);
+    throw new Error('Error searching products');
+  }
+};
 
 module.exports = {
   authenticate,
@@ -163,4 +136,6 @@ module.exports = {
   find,
   requestPasswordreset,
   createProduct,
+  getProducts,
+  searchProductsBySource,
 };

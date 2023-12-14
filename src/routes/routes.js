@@ -22,6 +22,6 @@ router.post("/forget-password",authenticate,handleForgetPassword)
 
 router.post("/product",authenticate, handlePostDataProduct)
 router.get("/productList", authenticate ,handleGetAllDataProduct)
-router.get("/product/:productId", handleGetDataId)
-router.post("/product/:idOrsearch", handleSearchData)
+router.get("/product/:productId",authenticate, handleGetDataId)
+router.post("/product/:idOrsearch",authenticate, handleSearchData)
 module.exports = router;

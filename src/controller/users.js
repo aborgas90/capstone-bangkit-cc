@@ -1,8 +1,8 @@
-const { authenticate, find, createUser, requestPasswordreset, createProduct } = require('../services/users');
+const { authenticate, find, createUser, requestPasswordreset, createProduct, getProducts, searchProductsBySource } = require('../services/users');
 const User = require('../models/users')
 const Token = require('../models/token')
 const Product = require('../models/product');
-const product = require('../models/product');
+
 
 const handleSignup = async(req, res, next) => {
     const { name, email, password } = req.body;
@@ -58,44 +58,31 @@ const handleResetPassword = async (req, res, next) => {
     }
 }
 
-const handleForgetPassword = async (req, res, next) => {
-    
-}
 
 const handlePostDataProduct = async (req, res, next) => {
     try {
-        const {
-            productName,
-            price, 
-            rating, 
-            sell, 
-            location, 
-            shopName, 
-            category
-        } = req.body;
+        const productData = req.body;
 
-        // Check if any required field is empty
-        if (!productName || !price || !rating || !sell || !location || !shopName || !category) {
-            const missingField = Object.keys(req.body).find(key => !req.body[key]);
-            return res.status(400).json({ error: `The '${missingField}' field is empty`, message: 'Invalid request' });
+        // Panggil fungsi layanan untuk membuat produk
+        const product = await createProduct(productData);
+        if(!productData) {
+            return res.status(404).json({message: 'Product Kosong'})
         }
 
-        const { product } = await createProduct({
-            productName,
-            price,
-            rating,
-            sell,
-            location,
-            shopName,
-            category
-        });
-
-        console.log('check product', product);
         res.status(201).json({ message: 'Product berhasil dibuat', product });
     } catch (error) {
         next(error);
     }
 };
+
+  const handleGetProducts = async (req, res, next) => {
+    try {
+      const products = await getProducts();
+      res.status(200).json({ products });
+    } catch (error) {
+      next(error);
+    }
+  };
 
 
 const handleGetAllDataProduct = async (req, res, next) => {
@@ -132,26 +119,30 @@ const handleGetDataId = async (req, res, next) => {
 
 const handleSearchData = async (req, res, next) => {
     try {
-        const query = req.query.search;
+        const result = await Product.aggregate([
+            {
+                '$search' : {
+                    'index' : 'nama-search',
+                    'text' : {
+                        'query' : req.query.source,
+                        'path' : {
+                            'wildcard' : '*'
+                        }
+                    }
+                }
+            }
+        ])
 
-        // Mengecek apakah query valid
-        if (!query) {
-            return res.status(400).json({ error: 'Invalid search query', message: 'Invalid request' });
-        }
-
-        // Mencari produk berdasarkan query (contoh: pencarian berdasarkan nama produk)
-        const products = await Product.find({ productName: { $regex: new RegExp(query, 'i') } });
-
-        if (products.length === 0) {
-            return res.status(404).json({ error: 'No matching products found', message: 'Invalid search query' });
-        }
-
-        res.status(200).json({ products });
+        res.status(200).json(result)
     } catch (error) {
         next(error);
     }
-}
+};
 
+
+const handleForgetPassword = async (req, res, next) => {
+    
+}
 
 module.exports = {
     handleSignup,
@@ -160,6 +151,7 @@ module.exports = {
     handleForgetPassword,
     handleGetAllDataProduct,
     handlePostDataProduct,
+    handleGetProducts,
     handleGetDataId,
     handleSearchData,
 }
