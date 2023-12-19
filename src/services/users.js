@@ -8,7 +8,8 @@ const crypto = require("crypto")
 
 const User = require('../models/users')
 const Token = require('../models/token')
-const Product = require('../models/product')
+const Product = require('../models/product');
+const token = require("../models/token");
 
 const { JWT_SECRET } = process.env;
 // const usersFilePath = path.join(__dirname, '../databases/db.json');
@@ -84,13 +85,13 @@ const find = async ({ id, email }) => {
 const requestPasswordreset = async ({user,passowrdLama, passwordBaru,passwordKonfirmasi}) => {
   // console.log(user, "testsssssss")
   if( passwordBaru !== passwordKonfirmasi ){
-    throw new Error('Konfirmasi Password tidak sama') //400
+    throw { statusCode: 401, message: 'Konfirmasi Password tidak sama' }; //400
   }
 
   const isPasswordValid = await bcrypt.compare(passowrdLama, user.password);
 
   if(!isPasswordValid){
-    throw new Error('Passowrd lama tidak sama') //400
+    throw { statusCode: 401, message: 'Passowrd lama tidak sama' }; //400
   }
 
   const hashedNewPassword = await bcrypt.hash(passwordBaru, 10);
@@ -130,6 +131,30 @@ const searchProductsBySource = async (source) => {
   }
 };
 
+const requestForgotPassword = async (email) => {
+  const user = await User.findOne({ email })
+  console.log("Email User : ",user)
+  if(!user) {
+    throw { statusCode: 401, message: 'User Does not Exist' };
+  }
+
+  let token = await Token.findOne({userId: user._id})
+  if(token) {
+    await token.deleteOne();
+  }
+
+  const hashedPassword = await bcrypt.hash(password, 10);
+  await new Token({
+    userId: user._id,
+    token: hashedPassword,
+    createdAt: Date.now(),
+  }).save();
+
+  const link = `${clientURL}/passwordReset?token=${resetToken}&id=${user._id}`;
+  sendEmail(user.email,"Password Reset Request",{name: user.name,link: link,},"./template/requestResetPassword.handlebars");
+  return link;
+}
+
 module.exports = {
   authenticate,
   createUser,
@@ -138,4 +163,5 @@ module.exports = {
   createProduct,
   getProducts,
   searchProductsBySource,
+  requestForgotPassword,
 };

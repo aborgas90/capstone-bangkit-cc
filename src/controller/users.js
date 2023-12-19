@@ -1,4 +1,4 @@
-const { authenticate, find, createUser, requestPasswordreset, createProduct, getProducts, searchProductsBySource } = require('../services/users');
+const { authenticate, find, createUser, requestPasswordreset, createProduct, getProducts, requestForgotPassword } = require('../services/users');
 const User = require('../models/users')
 const Token = require('../models/token')
 const Product = require('../models/product');
@@ -35,29 +35,6 @@ const handleLogin = async (req, res, next) => {
         next(error)
     }
 }
-
-const handleResetPassword = async (req, res, next) => {
-    try {
-        const user = req.user
-        console.log(user)
-        console.log(user.password)
-        if (!user) {
-            return res.status(400).send({message: "User does not exist"})
-        }
-        let token = await Token.findOne({ userId: user._id });
-        if (token) {
-            await token.deleteOne()
-        }
-
-        const { passowrdLama, passwordBaru,passwordKonfirmasi } = req.body;
-        await requestPasswordreset({user, passowrdLama, passwordBaru,passwordKonfirmasi});
-
-        res.status(200).json({message :'passowrd berhasil diubah'})
-    } catch (error) {
-        next(error);
-    }
-}
-
 
 const handlePostDataProduct = async (req, res, next) => {
     try {
@@ -139,9 +116,42 @@ const handleSearchData = async (req, res, next) => {
     }
 };
 
+const handleResetPassword = async (req, res, next) => {
+    try {
+        const user = req.user
+        console.log(user)
+        console.log(user.password)
+        if (!user) {
+            return res.status(400).send({message: "User does not exist"})
+        }
+        let token = await Token.findOne({ userId: user._id });
+        if (token) {
+            await token.deleteOne()
+        }
+
+        const { passowrdLama, passwordBaru,passwordKonfirmasi } = req.body;
+        await requestPasswordreset({user, passowrdLama, passwordBaru,passwordKonfirmasi});
+
+        res.status(200).json({message :'passowrd berhasil diubah'})
+    } catch (error) {
+        next(error);
+    }
+}
 
 const handleForgetPassword = async (req, res, next) => {
+    try {
+        const email  = req.body.email
+        console.log("email : " ,email)
+        const requestForgotPasswordService = await requestForgotPassword(
+            email
+        )
+
+        console.log(requestForgotPasswordService)
     
+        return res.json(requestForgotPasswordService)
+    } catch (error) {
+        next(error);
+    }
 }
 
 module.exports = {

@@ -1,5 +1,5 @@
 const express = require("express");
-const { 
+const {
     handleSignup,
     handleLogin,
     handleResetPassword,
@@ -13,15 +13,14 @@ const {
 const { authenticate } = require('../middleware/auth')
 const router = express.Router();
 
-
-
 router.post("/signup", handleSignup);
 router.post("/login", handleLogin);
 router.post("/password-reset",authenticate,handleResetPassword)
-router.post("/forget-password",authenticate,handleForgetPassword)
+
+router.post("/forget-password",handleForgetPassword)
 
 router.post("/product",authenticate, handlePostDataProduct)
 router.get("/productList", authenticate ,handleGetAllDataProduct)
-router.get("/product/:productId",authenticate, handleGetDataId)
+router.get("/productList/:productId",authenticate, handleGetDataId)
 router.post("/product/:idOrsearch",authenticate, handleSearchData)
 module.exports = router;

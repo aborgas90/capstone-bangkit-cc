@@ -10,46 +10,72 @@ const productSchema = new Schema (
             },
             items: [
                 {
-                    productName: {
-                        type: String,
-                        required: true,
-                    },
-                    price: {
-                        type: String,
-                        required: true,
-                    },
-                    rating: {
-                        type: String,
-                        required: true,
-                    },
-                    sell: {
-                        type: String,
-                        required: true,
-                    },
-                    location: {
-                        type: String,
-                        required: true,
-                    },
-                    shopName: {
-                        type: String,
-                        required: true,
-                    },
                     category: {
                         type: String,
                         required: true,
                     },
-                    jumlahData: {
-                        type: Number,
-                    },
-                    jumlahMerk: {
-                        type: Number, // Array of strings
+                    persebaranData: {
+                        type: String,
                     },
                     productTerjual: {
                         type: String,
                     },
-                    persebaranData: {
-                        type: String,
-                    },
+                    itemsDetail : [
+                        {
+                            productName: {
+                                type: String,
+                                required: true,
+                            },
+                            price: {
+                                type: String,
+                                required: true,
+                            },
+                            rating: {
+                                type: String,
+                                required: true,
+                            },
+                            sell: {
+                                type: String,
+                                required: true,
+                            },
+                            location: {
+                                type: String,
+                                required: true,
+                            },
+                            shopName: {
+                                type: String,
+                                required: true,
+                            },
+                            jumlahData: {
+                                type: Number,
+                            },
+                            jumlahMerk: {
+                                type: String, // Array of strings
+                            },
+                            productTerjual: {
+                                type: String,
+                            },
+                            ketTotalProduct: {
+                                type: String,
+                            },
+                            rangeHarga: {
+                                type: String,
+                            },
+                            rangeJumlahTerjual :{
+                                type: String,
+                            },
+                            topProduct : {
+                                type: String,
+                            },
+                            category: {
+                                type: String,
+                                required: true,
+                            },
+                            persebaranData: {
+                                type: String,
+                            },
+                        }
+                    ],
                 }
             ],
         },
