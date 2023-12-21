@@ -1,0 +1,39 @@
+#####SIGNUP_REQUEST
+POST https://ch2-ps401.et.r.appspot.com/api/v1/users/signup HTTP/1.1
+Content-Type: application/json"
+{
+  "name": "dadang",
+  "email": "dadang@gmail.com",
+  "password": "dadang"
+}
+
+#REQUEST LOGIN
+###
+POST https://ch2-ps401.et.r.appspot.com/api/v1/users/login HTTP/1.1
+Content-Type: application/json
+
+{
+  "name": "akukamukamu41",
+  "email": "akukamukamu41@gmail.com",
+  "password": "12345"
+}
+
+#REQUEST PASSWORD RESET
+###
+POST https://ch2-ps401.et.r.appspot.com/api/v1/users/password-reset HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTc3MWIxMzJkOThjMGZiNjkwNDY2ZDQiLCJpYXQiOjE3MDIzMDQ3MTQsImV4cCI6MTcwMjM5MTExNH0.yzbf4pgkPdaIetglCNBFYeKGmbGet5XsN9VSD218vj0
+
+{"passowrdLama" : "dadang","passwordBaru" : "1234567", "passwordKonfirmasi" : "1234567"}
+
+##REQUEST PRODUCTLIST
+###
+GET https://ch2-ps401.et.r.appspot.com/api/v1/users/productList HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTdmY2EwMzBkOTMwY2EwNWM3OTZkMTIiLCJpYXQiOjE3MDMxMzAwNTIsImV4cCI6MTcwMzIxNjQ1Mn0.vYHOtCiZCvaES8imCUjs4wJVoxkzb5-vXUc2jLr5Upo
+
+###REQUEST PRODUCT ID
+###
+GET https://ch2-ps401.et.r.appspot.com/api/v1/users/productList/6581bdba2235bd336a933fa4 HTTP/1.1
+Content-Type: application/json 
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTdmY2EwMzBkOTMwY2EwNWM3OTZkMTIiLCJpYXQiOjE3MDMxMzAwNTIsImV4cCI6MTcwMzIxNjQ1Mn0.vYHOtCiZCvaES8imCUjs4wJVoxkzb5-vXUc2jLr5Upo
